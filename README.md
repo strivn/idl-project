@@ -13,7 +13,7 @@ Large Language Models (LLMs) excel at text generation but struggle with accurate
 
 ## Fine-Tuning Data
 
-At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. Instead FLAN Subset Mini (around 300 mb) can be used to test the fine tuning process.
+At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. Instead FLAN Subset Mini (around 300 mb based on deduped) can be used to test the fine tuning process.
 
 source:`https://huggingface.co/datasets/pszemraj/flan-subsets-mini`
 
