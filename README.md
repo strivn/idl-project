@@ -11,6 +11,14 @@ Mainly inspired by "Time-Reversal Provides Unsupervised Feedback to LLMs" (Yerra
 
 Large Language Models (LLMs) excel at text generation but struggle with accurate citation. We're implementing and evaluating reversed language models that predict queries from responses to enhance citation attribution and reduce hallucination in citations.
 
+## Fine-Tuning Data
+
+At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. Instead FLAN Subset Mini (around 300 mb) can be used to test the fine tuning process.
+
+source:`https://huggingface.co/datasets/pszemraj/flan-subsets-mini`
+
+
+
 ## Getting Started
 ```python
 # Clone the repository
