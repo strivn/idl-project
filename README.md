@@ -1,22 +1,15 @@
-# Citing Backward: Reversed LLMs
+# Can backward models improve citation?
 
 
 ## Overview
 
-[Part of course project for 11785 S25]
+[Work is performed as part of course project for 11785-S25 Intro to Deep Learning]
 
-This project explores how Time-Reversed Language Models (TRLMs) can improve citation accuracy in language models. We investigate whether backward token prediction enhances citation attribution and reduces hallucination in high-stakes domains like law, healthcare, and research.
+Language models have demonstrated remarkable capabilities in text generation across various domains. However, their probabilistic nature often leads to the generation of content that are coherent but may lack factual accuracy. This phenomenon is commonly referred as "hallucination". Therefore this raises the motivation to explore, how may we improve language models factual accuracy capabilities?
 
-Mainly inspired by "Time-Reversal Provides Unsupervised Feedback to LLMs" (Yerram et al., 2024), we implement smaller-scale models to validate the TRLM approach for citation improvement.
+Recent work by (Varun et al., 2025) introduced [Time-Reversed Language Models (TRLMs)](papers/TRLM_2412.02626.pdf). TRLMs operate in the reverse direction (response → query), enabling them to model $P(query|response)$. In contrast, typical language models predict in the forward direction (query → response), essentially modeling the probability distribution $P(response|query)$
 
-Large Language Models (LLMs) excel at text generation but struggle with accurate citation. We're implementing and evaluating reversed language models that predict queries from responses to enhance citation attribution and reduce hallucination in citations.
-
-## Fine-Tuning Data
-
-At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. Instead FLAN Subset Mini (around 300 mb based on deduped) can be used to test the fine tuning process.
-
-source:`https://huggingface.co/datasets/pszemraj/flan-subsets-mini`
-
+This project examines how TRLMs can improve citation accuracy in language models.
 
 
 ## Getting Started
@@ -27,11 +20,27 @@ cd idl-project
 
 # Install requirements
 pip install -r requirements.txt
-
 ```
 
+## Repository Structure
+The repository is yet to be refactored at this stage.
+```
+idl-project
+|- scoring_citation_experiment_v3.ipynb : Citation attribution notebook
+|- pythia_fine_tune.ipynb               : Fine tuning notebook
+|- papers/                              : references
+|- .archive/                            : old files
+```
+
+
+## Fine-Tuning Data
+
+At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. So we use [FLAN Subset Mini](https://huggingface.co/datasets/pszemraj/flan-subsets-mini) (around 300 mb based on deduped) to test the fine tuning process.
+
+
+
 ## Team
-- Ivan Wiryadi
-- Janbol Jangabyl
-- Jihu Hwang
+- Ivan Wiryadi (iwiryadi)
+- Janbol Jangabyl (jjangby)
+- Jihu Hwang (jihuh)
 - Xuanyi Shen
