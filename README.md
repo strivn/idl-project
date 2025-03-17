@@ -39,6 +39,6 @@ At this stage of the project, fine tuning models on the full FLAN 2022 dataset a
 
 ## Team
 - Ivan Wiryadi (iwiryadi)
-- Janbol Jangabyl (jjangby)
+- Janbol Jangabyl (jjangaby)
 - Jihu Hwang (jihuh)
-- Xuanyi Shen
+- Xuanyi Shen (xuanyis)
