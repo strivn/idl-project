@@ -24,8 +24,8 @@ pip install -r requirements.txt
 The repository is yet to be refactored at this stage.
 ```
 idl-project
-|- scoring_citation_experiment_v4.ipynb : Citation attribution notebook
-|- pythia_fine_tune_v5.ipynb            : Fine tuning notebook
+|- scoring_citation_experiment_v5.ipynb : Citation attribution notebook
+|- pythia_fine_tune_v4.ipynb            : Fine tuning notebook
 |- papers/                              : references
 |- .archive/                            : old files
 ```
