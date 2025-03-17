@@ -36,7 +36,9 @@ idl-project
 At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. So we use [FLAN Subset Mini](https://huggingface.co/datasets/pszemraj/flan-subsets-mini) (around 300 mb based on deduped) to test the fine tuning process.
 
 ## Initial Fine-tuning test
-The figure below is a train loss plot for the initial few runs for Pythia Fo and Pythia Ba (160M) models on FLAN Subset Mini dataset. As described in the report, the Forward model will fine tuned on standard left to right tokens while the Backward model will be fine tuned the left to right tokens. The future iterationss will involve exploring Parameter efficient Fine tuning methods (e.g. LoRA, Adapters, etc). Ablation study will also be conducted to achieve proper convergence on the fine tuned models. Main concern and challenge is an access to GPUs that can speed up the full fine tuning process which will be investigated further after midterm checkpoint. Please note that the fine tuning train process was stopped manually since the free T4 from Google Colab ran out easily.
+The figure below presents the train loss plot for the initial runs of the Pythia Fo and Pythia Ba (160M) models on the FLAN Subset Mini dataset. As outlined in the report, the Forward model is fine-tuned on standard left-to-right tokens, while the Backward model is fine-tuned on right-to-left tokens. Future iterations will focus on exploring parameter-efficient fine-tuning methods such as LoRA and Adapters. Additionally, an ablation study will be conducted to ensure proper convergence of the fine-tuned models.
+
+A major challenge is access to GPUs capable of accelerating the full fine-tuning process, which will be further investigated after the midterm checkpoint. Notably, the fine-tuning process was manually stopped due to the limited availability of free T4 GPUs on Google Colab.
 
 ![Training Loss](https://raw.githubusercontent.com/strivn/idl-project/main/W%26B%20Chart%203_17_2025,%2012_51_33%20AM.png)
 
