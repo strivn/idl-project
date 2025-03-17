@@ -35,6 +35,10 @@ idl-project
 
 At this stage of the project, fine tuning models on the full FLAN 2022 dataset as described on the TRLM paper would be costly and time consuming. So we use [FLAN Subset Mini](https://huggingface.co/datasets/pszemraj/flan-subsets-mini) (around 300 mb based on deduped) to test the fine tuning process.
 
+## Initial Fine-tuning test
+The figure below is a train loss plot for the initial few runs for Pythia Fo and Pythia Ba (160M) models on FLAN Subset Mini dataset. As described in the report, the Forward model will fine tuned on standard left to right tokens while the Backward model will be fine tuned the left to right tokens. The future iterationss will involve exploring Parameter efficient Fine tuning methods (e.g. LoRA, Adapters, etc). Ablation study will also be conducted to achieve proper convergence on the fine tuned models. Main concern and challenge is an access to GPUs that can speed up the full fine tuning process which will be investigated further after midterm checkpoint. Please note that the fine tuning train process was stopped manually since the free T4 from Google Colab ran out easily.
+
+![Training Loss]([https://raw.githubusercontent.com/your-username/your-repo/main/path-to-image.png](https://github.com/strivn/idl-project/blob/main/W%26B%20Chart%203_17_2025%2C%2012_51_33%20AM.png))
 
 
 ## Team
