@@ -7,9 +7,7 @@
 
 Language models have demonstrated remarkable capabilities in text generation across various domains. However, their probabilistic nature often leads to the generation of content that are coherent but may lack factual accuracy. This phenomenon is commonly referred as "hallucination". Therefore this raises the motivation to explore, how may we improve language models factual accuracy capabilities?
 
-Recent work by (Varun et al., 2025) introduced [Time-Reversed Language Models (TRLMs)](papers/TRLM_2412.02626.pdf). It is shown in the paper that TRLMs may achieve better performance in 
-
-This project examines how TRLMs can improve citation accuracy in language models.
+Recent work by (Varun et al., 2025) introduced [Time-Reversed Language Models (TRLMs)](papers/TRLM_2412.02626.pdf). It is shown in the paper that TRLMs may achieve better performance in citations. So this project attempts to examine whether reverse language models can improve citation accuracy.
 
 
 ## Getting Started
