@@ -125,6 +125,8 @@ def compute_token_probabilities(input_ids, model, tokenizer, context_len, target
         'perplexity': perplexity
     }
 
+## maybe add tfidf score?
+
 
 # wrapper
 # def calculate_llm_score(query, answer, model, tokenizer, task='citation', backward=False, debug=False):
