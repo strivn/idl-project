@@ -40,8 +40,8 @@ def load_cnn_dataset(num_samples=10):
         return Dataset.from_dict(sample_data)
 
 
-def load_flan_dataset(source="Open-Orca/FLAN", streaming=True):
-    dataset = load_dataset(source, split="train",
+def load_flan_dataset(source="Open-Orca/FLAN", split='train', streaming=True):
+    dataset = load_dataset(source, split=split,
                            streaming=streaming, cache_dir=CACHE_DIR)
     
     print("Dataset loaded successfully")
