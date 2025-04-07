@@ -5,9 +5,8 @@
     ```
     module load AI/pytorch_23.02-1.13.1-py3
     pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-    pip install --upgrade transformers==4.36.2 datasets
+    pip install transformers==4.36.2 datasets tokenizers==0.15.2 sentence_transformers nltk rouge_score 
     pip install accelerate>=0.21.0,<0.22
-
     ```
     
 ## Debugging
