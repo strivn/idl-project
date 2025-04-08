@@ -5,11 +5,13 @@
     ```
     module load AI/pytorch_23.02-1.13.1-py3
     pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-    pip install transformers==4.36.2 datasets tokenizers==0.15.2 sentence_transformers nltk rouge_score 
-    pip install accelerate>=0.21.0,<0.22
+    pip install transformers==4.50.3 datasets tokenizers sentence_transformers nltk rouge_score accelerate
     ```
 3. Pull/clone from git if havent https://github.com/strivn/idl-project
-4. 
+
+
+## Some notes
+1. Check what cuda version is installed through nvcc / nvidia-smi and may need to adjust the torch installation accordingly (whl/cu124 -> cuda 124)
     
 ## Debugging
 
