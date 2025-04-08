@@ -42,10 +42,11 @@ def calculate_score(query, answer, model, tokenizer, backward=False, query_direc
             
     # DEBUG
     if debug:
+        print(f"Settings: {backward} {query_direction}")
         print(f"Context: {context}")
         print(f"Target: {target}")
         print(f"Full sentence: {context + target if not backward else target + context}")
-        print("")
+        print("\n")
 
     
     # tokenize

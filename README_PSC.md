@@ -8,6 +8,8 @@
     pip install transformers==4.36.2 datasets tokenizers==0.15.2 sentence_transformers nltk rouge_score 
     pip install accelerate>=0.21.0,<0.22
     ```
+3. Pull/clone from git if havent https://github.com/strivn/idl-project
+4. 
     
 ## Debugging
 

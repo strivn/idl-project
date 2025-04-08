@@ -79,17 +79,23 @@ def linear_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, ba_toke
 
     return results
 
-def binary_search_citation(article, highlight, model, tokenizer, backward=False, query_direction="normal", max_iterations=30):
+
+def binary_search_citation(highlight, article, model, tokenizer, backward=False, query_direction="normal", max_iterations=30):
     # Split the article into individual sentences using NLTK's sentence tokenizer
     sentences = sent_tokenize(article)
     if not sentences:  # Return default values if no sentences are found in the article
         return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
     
     # Split the highlight into sentences and use only the first sentence
-    highlight_sentences = sent_tokenize(highlight)
-    if not highlight_sentences:  # Return default values if no sentences are found in the highlight
+    # highlight_sentences = sent_tokenize(highlight)
+    # if not highlight_sentences:  # Return default values if no sentences are found in the highlight
+    #     return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
+    # highlight = highlight_sentences[0]  # Select the first sentence of the highlight
+    
+    # because only the first highlight sentence is passed, no need to retokenize
+    if not highlight:
         return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
-    highlight = highlight_sentences[0]  # Select the first sentence of the highlight
+
     
     # Define a recursive binary search function to find the best citation
     def binary_search_recursive(s, t, iteration=0):
@@ -99,7 +105,7 @@ def binary_search_citation(article, highlight, model, tokenizer, backward=False,
             # Combine sentences in the range [s, t] into a single string
             a_half = ' '.join(sentences[s:t + 1])
             # Calculate the LLM score for the combined text using calculate_score with query_direction parameter
-            result = calculate_score(a_half, highlight, model, tokenizer, backward=backward, query_direction=query_direction)
+            result = calculate_score(highlight, a_half, model, tokenizer, backward=backward, query_direction=query_direction)
             score = result['normalized_log_prob']
             perplexity = result['perplexity']
             return a_half, score, perplexity
@@ -110,8 +116,8 @@ def binary_search_citation(article, highlight, model, tokenizer, backward=False,
         a_half1 = ' '.join(sentences[s:mid + 1])
         a_half2 = ' '.join(sentences[mid + 1:t + 1])
         # Calculate LLM scores for both halves
-        result1 = calculate_score(a_half1, highlight, model, tokenizer, backward=backward, query_direction=query_direction)
-        result2 = calculate_score(a_half2, highlight, model, tokenizer, backward=backward, query_direction=query_direction)
+        result1 = calculate_score(highlight, a_half1, model, tokenizer, backward=backward, query_direction=query_direction)
+        result2 = calculate_score(highlight, a_half2, model, tokenizer, backward=backward, query_direction=query_direction)
         s1, s2 = result1['normalized_log_prob'], result2['normalized_log_prob']
         
         # Debugging
@@ -133,6 +139,8 @@ def binary_search_citation(article, highlight, model, tokenizer, backward=False,
         'score': score,
         'perplexity': perplexity
     }
+    
+    
 def binary_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, ba_tokenizer, max_iterations=30):
     """
     For each example in the dataset, perform binary search attribution for citations.
@@ -147,19 +155,20 @@ def binary_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, 
     for idx, example in tqdm(dataset.iterrows(), total=len(dataset)):
         # Split article and highlights into sentences
         article = example['article']
+        
         highlight_sentences = sent_tokenize(example['highlights'])
         if not highlight_sentences:
             continue
         highlight = highlight_sentences[0]
         
         # Baseline: Using forward baseline (query_direction="normal", backward=False)
-        baseline_result = binary_search_citation(article, highlight, fo_model, fo_tokenizer, backward=False, query_direction="normal", max_iterations=max_iterations)
+        baseline_result = binary_search_citation(highlight, article, fo_model, fo_tokenizer, backward=False, query_direction="normal", max_iterations=max_iterations)
         
         # TRLM-Fo: Using forward model with query_direction="reverse" (A->S direction)
-        fo_result = binary_search_citation(article, highlight, fo_model, fo_tokenizer, backward=False, query_direction="reverse", max_iterations=max_iterations)
+        fo_result = binary_search_citation(highlight, article, fo_model, fo_tokenizer, backward=False, query_direction="reverse", max_iterations=max_iterations)
         
         # TRLM-Ba: Using backward model with query_direction="reverse" (A->S direction)
-        ba_result = binary_search_citation(article, highlight, ba_model, ba_tokenizer, backward=True, query_direction="reverse", max_iterations=max_iterations)
+        ba_result = binary_search_citation(highlight, article, ba_model, ba_tokenizer, backward=True, query_direction="reverse", max_iterations=max_iterations)
         
         results.append({
             'id': example['id'],
@@ -177,17 +186,20 @@ def binary_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, 
     
     return results
 
-def exclusion_search_citation(article, highlight, model, tokenizer, backward=False, query_direction="normal"):
+def exclusion_search_citation(highlight, article, model, tokenizer, backward=False, query_direction="normal"):
     # 1. Split the entire sentence group into individual sentences
     sentences = sent_tokenize(article)
     if not sentences:
         return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
     
     # Split the highlight into sentences and use only the first sentence
-    highlight_sentences = sent_tokenize(highlight)
-    if not highlight_sentences:
-        return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
-    highlight = highlight_sentences[0]  # Use only the first sentence
+    # highlight_sentences = sent_tokenize(highlight)
+    # if not highlight_sentences:
+    #     return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
+    # highlight = highlight_sentences[0]  # Use only the first sentence
+    
+    
+    # 
     
     # 2. Calculate calculate_llm_score for each sentence group with one sentence removed from index 0 to the end
     all_scores = []
@@ -200,7 +212,7 @@ def exclusion_search_citation(article, highlight, model, tokenizer, backward=Fal
         else:
             # Combine the remaining sentences into one (maintain context)
             combined_text = " ".join(excluded_sentences)
-            result = calculate_score(combined_text, highlight, model, tokenizer, backward=backward, query_direction=query_direction)
+            result = calculate_score(highlight, combined_text, model, tokenizer, backward=backward, query_direction=query_direction)
             score = result['normalized_log_prob']
             perplexity = result['perplexity']
         all_scores.append((score, perplexity, i))
@@ -232,17 +244,19 @@ def exclusion_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_mode
     results = []
     for idx, example in tqdm(dataset.iterrows(), total=len(dataset)):
         article = example['article']
+        
+        # get only the first sentence
         highlight_sentences = sent_tokenize(example['highlights'])
         if not highlight_sentences:
             continue
         highlight = highlight_sentences[0]
         
         # Baseline: forward 모델, backward=False, query_direction="normal"
-        baseline_result = exclusion_search_citation(article, highlight, fo_model, fo_tokenizer, backward=False, query_direction="normal")
+        baseline_result = exclusion_search_citation(highlight, article, fo_model, fo_tokenizer, backward=False, query_direction="normal")
         # Forward (fo): forward 모델, backward=False, query_direction="reverse"
-        fo_result = exclusion_search_citation(article, highlight, fo_model, fo_tokenizer, backward=False, query_direction="reverse")
+        fo_result = exclusion_search_citation(highlight, article, fo_model, fo_tokenizer, backward=False, query_direction="reverse")
         # Backward (ba): backward 모델, backward=True, query_direction="reverse"
-        ba_result = exclusion_search_citation(article, highlight, ba_model, ba_tokenizer, backward=True, query_direction="reverse")
+        ba_result = exclusion_search_citation(highlight, article, ba_model, ba_tokenizer, backward=True, query_direction="reverse")
         
         results.append({
             'id': example['id'],
