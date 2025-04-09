@@ -1,6 +1,58 @@
+import os
 import torch as t
 import numpy as np
 import torch.nn.functional as F
+
+
+# ----------------------
+# Utils
+# ----------------------
+
+def ensure_directory_exists(directory_path):
+    """
+    Check if a directory exists, and create it if it doesn't.
+    
+    Args:
+        directory_path: Path to the directory to check/create
+    
+    Returns:
+        The path to the directory (which now definitely exists)
+    """
+    if not os.path.exists(directory_path):
+        # Directory doesn't exist, so create it
+        # makedirs creates all intermediate directories too
+        os.makedirs(directory_path, exist_ok=True)
+        print(f"Created directory: {directory_path}")
+    
+    return directory_path
+
+
+# ----------------------
+# Confgs
+# ----------------------
+
+# Load models
+if t.cuda.is_available():
+    DEVICE = "cuda"
+elif t.backends.mps.is_available():
+    DEVICE = "mps"
+else:
+    DEVICE = "cpu"
+
+    
+if os.path.exists("/ocean"):    
+    CACHE_DIR = "/ocean/projects/cis250068p/shared/caches" 
+else:
+    CACHE_DIR = ".cache/"
+
+ensure_directory_exists(CACHE_DIR) 
+
+
+
+# ----------------------
+# Scoring Functions
+# ----------------------
+
 
 def calculate_score(query, answer, model, tokenizer, backward=False, query_direction="reverse", task='citation', debug=False):
     """

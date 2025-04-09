@@ -1,6 +1,5 @@
 from datasets import load_dataset, Dataset
-
-CACHE_DIR = '.cache'
+from .utils import CACHE_DIR
 
 # Load dataset
 def load_cnn_dataset(num_samples=10):

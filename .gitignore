@@ -9,6 +9,7 @@ __pycache__/
 .DS_Store
 wandb/
 output/
+logs/
 
 # Distribution / packaging
 .Python
