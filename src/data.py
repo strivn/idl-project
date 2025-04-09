@@ -1,5 +1,6 @@
 from datasets import load_dataset, Dataset
 from .utils import CACHE_DIR
+from nltk.tokenize import sent_tokenize
 
 # Load dataset
 def load_cnn_dataset(num_samples=10):
@@ -46,3 +47,47 @@ def load_flan_dataset(source="Open-Orca/FLAN", split='train', streaming=True):
     print("Dataset loaded successfully")
 
     return dataset
+
+
+
+def prepare_cnn_dataset(dataset, min_article_sent_len=1):
+    """
+    Prepares sentence-level query-answer pairs for batched scoring from the CNN-DailyMail Dataset
+
+    Returns:
+        all_pairs: list of (highlight, article sentence) tuples
+        meta: list of dicts with example id, sentence, highlight, and article_idx
+    """
+    all_pairs = []
+    meta = []
+
+    # changed to use itertuples as it is much faster
+    
+    # itertuples 
+    #   CPU times: user 2.4 ms, sys: 81 μs, total: 2.48 ms
+    #   10k CPU times: user 224 ms, sys: 13.3 ms, total: 237 ms
+
+    # iterrows 
+    #   CPU times: user 20.8 ms, sys: 3.13 ms, total: 23.9 ms
+    #   10k CPU times: user 1.19 s, sys: 54.5 ms, total: 1.25 s
+    for row in dataset.itertuples(index=True):
+        
+        article_sents = sent_tokenize(row.article)
+        highlights = sent_tokenize(row.highlights)
+        
+        if not highlights:
+            continue
+        
+        highlight = highlights[0]
+        for sent in article_sents:
+            if len(sent.split()) < min_article_sent_len:
+                continue
+            all_pairs.append((highlight, sent))
+            meta.append({
+                'id': row.id,
+                'highlight': highlight,
+                'article_sentence': sent,
+                'article_idx': row.Index
+            })
+    
+    return all_pairs, meta

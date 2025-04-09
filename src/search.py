@@ -1,8 +1,10 @@
+from collections import defaultdict
+
 import numpy as np
+from nltk.tokenize import sent_tokenize
 from tqdm.auto import tqdm
 
-from nltk.tokenize import sent_tokenize
-from .utils import calculate_score
+from .utils import calculate_score, calculate_score_batch
 
 
 def linear_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, ba_tokenizer):
@@ -75,6 +77,89 @@ def linear_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, ba_toke
             'fo_citation': best_fo_sentence,
             'fo_score': best_fo_score,
             'fo_perplexity': np.exp(-best_fo_score)
+        })
+
+    return results
+
+
+
+def linear_attribution_search_batched(pairs, meta, fo_model, fo_tokenizer, ba_model, ba_tokenizer, batch_size=32):
+    """
+    Perform batched linear attribution search from a pre-tokenized (highlight, article_sentence) list.
+
+    Args:
+        pairs (list of tuples): (highlight, article_sentence)
+        meta (list of dicts): metadata including 'id', 'highlight', 'article_sentence', 'article_idx'
+        fo_model, ba_model: Forward and backward LMs
+        fo_tokenizer, ba_tokenizer: Corresponding tokenizers
+        batch_size (int): Batch size for scoring
+
+    Returns:
+        List of dicts with best citation match for each article (by model)
+    """
+
+    # Unpack query/answer pairs
+    highlights = [q for q, _ in pairs]
+    article_sents = [a for _, a in pairs]
+
+    def batch_score_all(model, tokenizer, backward, direction):
+        scores = []
+        for i in tqdm(range(0, len(pairs), batch_size)):
+            batch_q = highlights[i:i+batch_size]
+            batch_a = article_sents[i:i+batch_size]
+            batch_scores = calculate_score_batch(
+                batch_q, batch_a, model, tokenizer,
+                backward=backward, query_direction=direction
+            )
+            scores.extend(batch_scores)
+        return scores
+
+    # Compute all three sets of scores
+    base_scores = batch_score_all(fo_model, fo_tokenizer, backward=False, direction="normal")
+    fo_scores   = batch_score_all(fo_model, fo_tokenizer, backward=False, direction="reverse")
+    ba_scores   = batch_score_all(ba_model, ba_tokenizer, backward=True,  direction="reverse")
+
+    # Group and aggregate best scores per article ID
+    grouped = defaultdict(lambda: {
+        'highlight': None,
+        'id': None,
+        'base': (-float('inf'), None),
+        'fo':   (-float('inf'), None),
+        'ba':   (-float('inf'), None),
+    })
+
+    for i, m in enumerate(meta):
+        ex_id = m['id']
+        hl = m['highlight']
+        sent = m['article_sentence']
+
+        grouped[ex_id]['id'] = ex_id
+        grouped[ex_id]['highlight'] = hl
+
+        if base_scores[i]['normalized_log_prob'] > grouped[ex_id]['base'][0]:
+            grouped[ex_id]['base'] = (base_scores[i]['normalized_log_prob'], sent)
+
+        if fo_scores[i]['normalized_log_prob'] > grouped[ex_id]['fo'][0]:
+            grouped[ex_id]['fo'] = (fo_scores[i]['normalized_log_prob'], sent)
+
+        if ba_scores[i]['normalized_log_prob'] > grouped[ex_id]['ba'][0]:
+            grouped[ex_id]['ba'] = (ba_scores[i]['normalized_log_prob'], sent)
+
+    # Final results
+    results = []
+    for ex_id, info in grouped.items():
+        results.append({
+            'id': info['id'],
+            'highlight': info['highlight'],
+            'base_citation': info['base'][1],
+            'base_score': info['base'][0],
+            'base_perplexity': np.exp(-info['base'][0]),
+            'fo_citation': info['fo'][1],
+            'fo_score': info['fo'][0],
+            'fo_perplexity': np.exp(-info['fo'][0]),
+            'ba_citation': info['ba'][1],
+            'ba_score': info['ba'][0],
+            'ba_perplexity': np.exp(-info['ba'][0]),
         })
 
     return results
@@ -186,6 +271,7 @@ def binary_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, 
     
     return results
 
+
 def exclusion_search_citation(highlight, article, model, tokenizer, backward=False, query_direction="normal"):
     # 1. Split the entire sentence group into individual sentences
     sentences = sent_tokenize(article)
@@ -238,6 +324,7 @@ def exclusion_search_citation(highlight, article, model, tokenizer, backward=Fal
         'score': individual_score,
         'perplexity': individual_perplexity
     }
+
 
 def exclusion_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_model, ba_tokenizer):
     
