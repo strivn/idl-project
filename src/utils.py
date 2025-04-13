@@ -42,6 +42,7 @@ else:
     
 if os.path.exists("/ocean"):    
     CACHE_DIR = "/ocean/projects/cis250068p/shared/caches" 
+    os.environ['HF_HOME'] = CACHE_DIR
 else:
     CACHE_DIR = ".cache/"
 

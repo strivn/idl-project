@@ -7,7 +7,7 @@
     ```
     module load AI/pytorch_23.02-1.13.1-py3
     pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-    pip install transformers==4.50.3 datasets tokenizers sentence_transformers nltk rouge_score accelerate
+    pip install transformers==4.50.3 datasets tokenizers sentence_transformers nltk rouge_score accelerate peft trl bitsandbytes
     ```
 3. Pull/clone from git if havent https://github.com/strivn/idl-project
 
