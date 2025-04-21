@@ -17,7 +17,7 @@ TEST_SIZE                   = 0.01
 TASK_DIVERSITY_P            = 0.1
 
 # Training parameters
-NUM_EPOCHS                  = 3
+NUM_EPOCHS                  = 2
 BATCH_SIZE                  = 32
 GRADIENT_ACCUMULATION_STEPS = 4
 
