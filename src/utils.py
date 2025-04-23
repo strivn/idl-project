@@ -50,7 +50,6 @@ else:
 ensure_directory_exists(CACHE_DIR) 
 
 
-
 # ----------------------
 # Scoring Functions
 # ----------------------
@@ -179,8 +178,6 @@ def compute_token_probabilities(input_ids, model, tokenizer, context_len, target
         'normalized_log_prob': normalized_log_prob,
         'perplexity': perplexity
     }
-
-## maybe add tfidf score?
 
 
 # wrapper
