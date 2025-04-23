@@ -251,11 +251,11 @@ def exclusion_search_attribution_search(dataset, fo_model, fo_tokenizer, ba_mode
             continue
         highlight = highlight_sentences[0]
         
-        # Baseline: forward 모델, backward=False, query_direction="normal"
+        # Baseline: backward=False, query_direction="normal"
         baseline_result = exclusion_search_citation(highlight, article, fo_model, fo_tokenizer, backward=False, query_direction="normal")
-        # Forward (fo): forward 모델, backward=False, query_direction="reverse"
+        # Forward (fo): backward=False, query_direction="reverse"
         fo_result = exclusion_search_citation(highlight, article, fo_model, fo_tokenizer, backward=False, query_direction="reverse")
-        # Backward (ba): backward 모델, backward=True, query_direction="reverse"
+        # Backward (ba): backward=True, query_direction="reverse"
         ba_result = exclusion_search_citation(highlight, article, ba_model, ba_tokenizer, backward=True, query_direction="reverse")
         
         results.append({

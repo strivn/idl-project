@@ -53,6 +53,40 @@ def load_cnn_dataset(num_samples=10):
         return Dataset.from_dict(sample_data)
 
 
+# def load_cnn_dataset(num_samples=None):
+#     try:
+#         ds = load_dataset(
+#             "cnn_dailymail", "3.0.0",
+#             split="train",
+#             streaming=False,
+#             cache_dir=CACHE_DIR
+#         )
+#         print("Dataset downloaded into cache successfully")
+
+#         if num_samples is not None:
+#             ds = ds.select(range(min(num_samples, len(ds))))
+
+#         print("Example dataset item:", ds[0])
+
+#         return ds
+
+#     except Exception as e:
+#         print(f"Error loading dataset: {e}")
+#         print("Creating synthetic test dataset instead...")
+#         sample_data = {
+#             'article': [
+#                 "John likes to play basketball. He goes to the court every evening. His friends join him on weekends.",
+#                 "The company announced record profits. Investors were pleased. The stock price increased by 10%."
+#             ],
+#             'highlights': [
+#                 "John plays basketball regularly with friends.",
+#                 "Company profits lead to stock price increase."
+#             ],
+#             'id': ['test1', 'test2']
+#         }
+#         return Dataset.from_dict(sample_data)
+
+
 # ----------------------
 # FLAN
 # ----------------------
