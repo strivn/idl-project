@@ -16,10 +16,10 @@ enable_progress_bar()
 # ----------------------
 
 
-def load_cnn_dataset(num_samples=10):
+def load_cnn_dataset(num_samples=10, cache_dir=CACHE_DIR):
     try:
         # Try with a specific cache directory
-        dataset = load_dataset("cnn_dailymail", "3.0.0", cache_dir=CACHE_DIR)
+        dataset = load_dataset("cnn_dailymail", "3.0.0", cache_dir=cache_dir)
         print("Dataset loaded successfully")
 
         # Verify the structure - this helps debug
