@@ -293,60 +293,12 @@ def exclusion_search_citation(
         'perplexity': pps[0] if pps else float('inf')
     }
 
-
-# def exclusion_search_attribution_search(
-#     dataset, fo_model, fo_tokenizer, ba_model, ba_tokenizer,
-#     sentence_batch_size: int = None
-# ):
-#     """
-#     Apply exclusion_search_citation to each example in the dataset.
-#     Returns a list of dicts with final citations and metrics for each config.
-#     """
-#     results = []
-#     for _, example in tqdm(dataset.iterrows(), total=len(dataset)):
-#         highlights = sent_tokenize(example['highlights'])
-#         if not highlights:
-#             continue
-#         highlight = highlights[0]
-#         article   = example['article']
-
-#         base = exclusion_search_citation(
-#             highlight, article, fo_model, fo_tokenizer,
-#             backward=False, query_direction="normal",
-#             sentence_batch_size=sentence_batch_size
-#         )
-#         fo  = exclusion_search_citation(
-#             highlight, article, fo_model, fo_tokenizer,
-#             backward=False, query_direction="reverse",
-#             sentence_batch_size=sentence_batch_size
-#         )
-#         ba  = exclusion_search_citation(
-#             highlight, article, ba_model, ba_tokenizer,
-#             backward=True,  query_direction="reverse",
-#             sentence_batch_size=sentence_batch_size
-#         )
-#         results.append({
-#             'id': example['id'],
-#             'highlight': highlight,
-#             'base_citation': base['citation'],
-#             'base_score': base['score'],
-#             'base_perplexity': np.exp(-base['score']) if base['score'] != float('-inf') else float('inf'),
-#             'fo_citation': fo['citation'],
-#             'fo_score': fo['score'],
-#             'fo_perplexity': np.exp(-fo['score']) if fo['score'] != float('-inf') else float('inf'),
-#             'ba_citation': ba['citation'],
-#             'ba_score': ba['score'],
-#             'ba_perplexity': np.exp(-ba['score']) if ba['score'] != float('-inf') else float('inf')
-#         })
-#     return results
 def exclusion_search_attribution_search(
     dataset, fo_model, fo_tokenizer, ba_model, ba_tokenizer,
-    sentence_batch_size: int = None,
-    topk: int = None
+    sentence_batch_size: int = None
 ):
     """
-    Apply exclusion search to each example in the dataset.
-    Uses top-k exclusion if `topk` is not None.
+    Apply exclusion_search_citation to each example in the dataset.
     Returns a list of dicts with final citations and metrics for each config.
     """
     results = []
@@ -357,42 +309,21 @@ def exclusion_search_attribution_search(
         highlight = highlights[0]
         article   = example['article']
 
-        if topk is not None:
-            base = exclusion_search_citation_topk(
-                highlight, article, fo_model, fo_tokenizer,
-                backward=False, query_direction="normal",
-                sentence_batch_size=sentence_batch_size,
-                topk=topk
-            )
-            fo = exclusion_search_citation_topk(
-                highlight, article, fo_model, fo_tokenizer,
-                backward=False, query_direction="reverse",
-                sentence_batch_size=sentence_batch_size,
-                topk=topk
-            )
-            ba = exclusion_search_citation_topk(
-                highlight, article, ba_model, ba_tokenizer,
-                backward=True, query_direction="reverse",
-                sentence_batch_size=sentence_batch_size,
-                topk=topk
-            )
-        else:
-            base = exclusion_search_citation(
-                highlight, article, fo_model, fo_tokenizer,
-                backward=False, query_direction="normal",
-                sentence_batch_size=sentence_batch_size
-            )
-            fo  = exclusion_search_citation(
-                highlight, article, fo_model, fo_tokenizer,
-                backward=False, query_direction="reverse",
-                sentence_batch_size=sentence_batch_size
-            )
-            ba  = exclusion_search_citation(
-                highlight, article, ba_model, ba_tokenizer,
-                backward=True,  query_direction="reverse",
-                sentence_batch_size=sentence_batch_size
-            )
-
+        base = exclusion_search_citation(
+            highlight, article, fo_model, fo_tokenizer,
+            backward=False, query_direction="normal",
+            sentence_batch_size=sentence_batch_size
+        )
+        fo  = exclusion_search_citation(
+            highlight, article, fo_model, fo_tokenizer,
+            backward=False, query_direction="reverse",
+            sentence_batch_size=sentence_batch_size
+        )
+        ba  = exclusion_search_citation(
+            highlight, article, ba_model, ba_tokenizer,
+            backward=True,  query_direction="reverse",
+            sentence_batch_size=sentence_batch_size
+        )
         results.append({
             'id': example['id'],
             'highlight': highlight,
@@ -407,64 +338,132 @@ def exclusion_search_attribution_search(
             'ba_perplexity': np.exp(-ba['score']) if ba['score'] != float('-inf') else float('inf')
         })
     return results
+# def exclusion_search_attribution_search(
+#     dataset, fo_model, fo_tokenizer, ba_model, ba_tokenizer,
+#     sentence_batch_size: int = None,
+#     topk: int = None
+# ):
+#     """
+#     Apply exclusion search to each example in the dataset.
+#     Uses top-k exclusion if `topk` is not None.
+#     Returns a list of dicts with final citations and metrics for each config.
+#     """
+#     results = []
+#     for _, example in tqdm(dataset.iterrows(), total=len(dataset)):
+#         highlights = sent_tokenize(example['highlights'])
+#         if not highlights:
+#             continue
+#         highlight = highlights[0]
+#         article   = example['article']
+
+#         if topk is not None:
+#             base = exclusion_search_citation_topk(
+#                 highlight, article, fo_model, fo_tokenizer,
+#                 backward=False, query_direction="normal",
+#                 sentence_batch_size=sentence_batch_size,
+#                 topk=topk
+#             )
+#             fo = exclusion_search_citation_topk(
+#                 highlight, article, fo_model, fo_tokenizer,
+#                 backward=False, query_direction="reverse",
+#                 sentence_batch_size=sentence_batch_size,
+#                 topk=topk
+#             )
+#             ba = exclusion_search_citation_topk(
+#                 highlight, article, ba_model, ba_tokenizer,
+#                 backward=True, query_direction="reverse",
+#                 sentence_batch_size=sentence_batch_size,
+#                 topk=topk
+#             )
+#         else:
+#             base = exclusion_search_citation(
+#                 highlight, article, fo_model, fo_tokenizer,
+#                 backward=False, query_direction="normal",
+#                 sentence_batch_size=sentence_batch_size
+#             )
+#             fo  = exclusion_search_citation(
+#                 highlight, article, fo_model, fo_tokenizer,
+#                 backward=False, query_direction="reverse",
+#                 sentence_batch_size=sentence_batch_size
+#             )
+#             ba  = exclusion_search_citation(
+#                 highlight, article, ba_model, ba_tokenizer,
+#                 backward=True,  query_direction="reverse",
+#                 sentence_batch_size=sentence_batch_size
+#             )
+
+#         results.append({
+#             'id': example['id'],
+#             'highlight': highlight,
+#             'base_citation': base['citation'],
+#             'base_score': base['score'],
+#             'base_perplexity': np.exp(-base['score']) if base['score'] != float('-inf') else float('inf'),
+#             'fo_citation': fo['citation'],
+#             'fo_score': fo['score'],
+#             'fo_perplexity': np.exp(-fo['score']) if fo['score'] != float('-inf') else float('inf'),
+#             'ba_citation': ba['citation'],
+#             'ba_score': ba['score'],
+#             'ba_perplexity': np.exp(-ba['score']) if ba['score'] != float('-inf') else float('inf')
+#         })
+#     return results
 
 
-def exclusion_search_citation_topk(
-    highlight, article,
-    model, tokenizer,
-    backward=False, query_direction="normal",
-    sentence_batch_size: int = None,
-    topk: int = 5
-):
-    """
-    Top-k exclusion search: only run exclusion for top-k most relevant sentences.
-    Drop-in replacement for exclusion_search_citation.
-    """
+# def exclusion_search_citation_topk(
+#     highlight, article,
+#     model, tokenizer,
+#     backward=False, query_direction="normal",
+#     sentence_batch_size: int = None,
+#     topk: int = 5
+# ):
+#     """
+#     Top-k exclusion search: only run exclusion for top-k most relevant sentences.
+#     Drop-in replacement for exclusion_search_citation.
+#     """
 
-    sentences = sent_tokenize(article)
-    if not sentences or not highlight:
-        return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
+#     sentences = sent_tokenize(article)
+#     if not sentences or not highlight:
+#         return {'citation': '', 'score': float('-inf'), 'perplexity': float('inf')}
 
-    # Context/Target builder
-    def make_ctx_tgt(text):
-        if query_direction == "normal" and not backward:
-            return highlight + " is a summary of", text
-        elif query_direction == "reverse" and not backward:
-            return text + " is a summary of", highlight
-        else:
-            return "is summarized by " + text, highlight
+#     # Context/Target builder
+#     def make_ctx_tgt(text):
+#         if query_direction == "normal" and not backward:
+#             return highlight + " is a summary of", text
+#         elif query_direction == "reverse" and not backward:
+#             return text + " is a summary of", highlight
+#         else:
+#             return "is summarized by " + text, highlight
 
-    # Step 0: full article score
-    full_ctx, full_tgt = make_ctx_tgt(' '.join(sentences))
-    full_score_list, _ = calculate_scores_batch([full_ctx], [full_tgt], model, tokenizer, backward=backward)
-    full_score = full_score_list[0] if full_score_list else float('-inf')
+#     # Step 0: full article score
+#     full_ctx, full_tgt = make_ctx_tgt(' '.join(sentences))
+#     full_score_list, _ = calculate_scores_batch([full_ctx], [full_tgt], model, tokenizer, backward=backward)
+#     full_score = full_score_list[0] if full_score_list else float('-inf')
 
-    # Step 1: linear scoring to get top-k
-    base_ctxs = [highlight + " is a summary of" for _ in sentences]
-    base_tgts = sentences
-    base_scores, _ = calculate_scores_batch(base_ctxs, base_tgts, model, tokenizer, backward=False)
+#     # Step 1: linear scoring to get top-k
+#     base_ctxs = [highlight + " is a summary of" for _ in sentences]
+#     base_tgts = sentences
+#     base_scores, _ = calculate_scores_batch(base_ctxs, base_tgts, model, tokenizer, backward=False)
 
-    topk = min(topk, len(sentences))
-    topk_indices = sorted(range(len(base_scores)), key=lambda i: base_scores[i], reverse=True)[:topk]
+#     topk = min(topk, len(sentences))
+#     topk_indices = sorted(range(len(base_scores)), key=lambda i: base_scores[i], reverse=True)[:topk]
 
-    # Step 2: exclusion scoring only on top-k
-    delta_scores = []
-    for idx in topk_indices:
-        excl_text = ' '.join(sentences[:idx] + sentences[idx+1:])
-        excl_ctx, excl_tgt = make_ctx_tgt(excl_text)
-        excl_score_list, _ = calculate_scores_batch([excl_ctx], [excl_tgt], model, tokenizer, backward=backward)
-        excl_score = excl_score_list[0] if excl_score_list else float('-inf')
-        delta = full_score - excl_score
-        delta_scores.append((delta, idx))
+#     # Step 2: exclusion scoring only on top-k
+#     delta_scores = []
+#     for idx in topk_indices:
+#         excl_text = ' '.join(sentences[:idx] + sentences[idx+1:])
+#         excl_ctx, excl_tgt = make_ctx_tgt(excl_text)
+#         excl_score_list, _ = calculate_scores_batch([excl_ctx], [excl_tgt], model, tokenizer, backward=backward)
+#         excl_score = excl_score_list[0] if excl_score_list else float('-inf')
+#         delta = full_score - excl_score
+#         delta_scores.append((delta, idx))
 
-    # Step 3: select worst-impact sentence and re-score it
-    _, worst_idx = max(delta_scores, key=lambda x: x[0])
-    worst_sent = sentences[worst_idx]
-    ctx, tgt = make_ctx_tgt(worst_sent)
-    scs, pps = calculate_scores_batch([ctx], [tgt], model, tokenizer, backward=backward)
+#     # Step 3: select worst-impact sentence and re-score it
+#     _, worst_idx = max(delta_scores, key=lambda x: x[0])
+#     worst_sent = sentences[worst_idx]
+#     ctx, tgt = make_ctx_tgt(worst_sent)
+#     scs, pps = calculate_scores_batch([ctx], [tgt], model, tokenizer, backward=backward)
 
-    return {
-        'citation': worst_sent,
-        'score': scs[0] if scs else float('-inf'),
-        'perplexity': pps[0] if pps else float('inf')
-    }
+#     return {
+#         'citation': worst_sent,
+#         'score': scs[0] if scs else float('-inf'),
+#         'perplexity': pps[0] if pps else float('inf')
+#     }
