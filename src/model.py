@@ -30,14 +30,14 @@ def load_ba_model():
     # Backward model
     ba_model = GPTNeoXForCausalLM.from_pretrained(
         "afterless/reverse-pythia-160m",
-        revision="step143000",
+        #revision="step143000",
         # attn_implementation="sdpa",
         cache_dir=f"{CACHE_DIR}/reverse-pythia-160m",
     ).to(DEVICE)
 
     ba_tokenizer = AutoTokenizer.from_pretrained(
         "afterless/reverse-pythia-160m",
-        revision="step143000",
+        #revision="step143000",
         cache_dir=f"{CACHE_DIR}/reverse-pythia-160m",
     )
     #
