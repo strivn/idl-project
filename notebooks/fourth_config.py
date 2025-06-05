@@ -2,8 +2,8 @@
 
 FT_TYPE         = 'full'            #full or lora
 
-RUN_NAME        = f'{FT_TYPE}-tuning-config3'
-
+RUN_NAME        = f'{FT_TYPE}-tuning-config4-restart'
+OUTPUT_DIR      = f"output/{RUN_NAME}"
 
 # Data parameters
 SUBSET_FRAC                 = 1
@@ -14,17 +14,17 @@ SUBSET_FRAC                 = 1
 FLAN_SUBSET                 = ['niv2_zsopt_data', 'flan_zsopt_data', 't0_zsopt_data', 'cot_zsopt_data', 'dialog_zsopt_data']
 
 TEST_SIZE                   = 0.01
-TASK_DIVERSITY_P            = 0.2
+TASK_DIVERSITY_P            = 0.1
 
 # Training parameters
-NUM_EPOCHS                  = 1
+NUM_EPOCHS                  = 2
 BATCH_SIZE                  = 32
 GRADIENT_ACCUMULATION_STEPS = 4
 
 WEIGHT_DECAY                = 0.01
-LEARNING_RATE               = 5e-7
-LR_SCHEDULER_TYPE           = "cosine"
-WARMUP_RATIO                = 0.1
+LEARNING_RATE               = 1e-6
+LR_SCHEDULER_TYPE           = "linear"
+WARMUP_RATIO                = 0
 SAVE_STEPS                  = 5000
 EVAL_STEPS                  = 5000
 LOGGING_STEPS               = 50

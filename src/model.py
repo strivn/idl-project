@@ -47,7 +47,7 @@ def load_ba_model():
     return ba_model, ba_tokenizer
 
 
-_default_ftfo_path = "/ocean/projects/cis250068p/shared/model/full-tuning-config4-restart-checkpoint-90000"
+_default_ftfo_path = "/ocean/projects/cis250068p/shared/model/full-tuning-config4-restart-complete"
 _default_ftba_path = "/ocean/projects/cis250068p/shared/model/full-tuning-reverse-config5"
 
 

@@ -2,8 +2,8 @@
 
 FT_TYPE         = 'full'            #full or lora
 
-RUN_NAME        = f'{FT_TYPE}-tuning-config4'
-
+RUN_NAME        = f'{FT_TYPE}-tuning-config1-restart'
+OUTPUT_DIR      = f"output/{RUN_NAME}"
 
 # Data parameters
 SUBSET_FRAC                 = 1
@@ -22,9 +22,9 @@ BATCH_SIZE                  = 32
 GRADIENT_ACCUMULATION_STEPS = 4
 
 WEIGHT_DECAY                = 0.01
-LEARNING_RATE               = 1e-6
-LR_SCHEDULER_TYPE           = "linear"
-WARMUP_RATIO                = 0
+LEARNING_RATE               = 5e-7
+LR_SCHEDULER_TYPE           = "cosine"
+WARMUP_RATIO                = 0.1
 SAVE_STEPS                  = 5000
 EVAL_STEPS                  = 5000
 LOGGING_STEPS               = 50
